@@ -1,0 +1,9 @@
+@backend_HostAddress = http://localhost:5071
+
+GET {{backend_HostAddress}}/products
+Accept: application/json
+
+###
+
+POST {{backend_HostAddress}}/products
+Accept: application/json
