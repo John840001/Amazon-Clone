@@ -7,14 +7,9 @@ namespace backend.Controllers
 {
     [ApiController]
     [Route("api/users")]
-    public class UsersController : ControllerBase
+    public class UsersController(AppDbContext context) : ControllerBase
     {
-        private readonly AppDbContext _context;
-
-        public UsersController(AppDbContext context)
-        {
-            _context = context;
-        }
+        private readonly AppDbContext _context = context;
 
         [HttpGet]
         public IActionResult GetUsers()
@@ -49,6 +44,30 @@ namespace backend.Controllers
             if (user == null)
                 return Unauthorized();
             return Ok(user);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateUser(int id, User user)
+        {
+            var existingUser = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (existingUser == null)
+                return NotFound();
+            existingUser.Name = user.Name;
+            existingUser.Email = user.Email;
+            existingUser.Password = user.Password;
+            _context.SaveChanges();
+            return Ok(existingUser);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (user == null)
+                return NotFound();
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+            return NoContent();
         }
     }
 }
