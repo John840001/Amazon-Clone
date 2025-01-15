@@ -7,6 +7,7 @@ namespace backend.Data
     {
         public required DbSet<Product> Products { get; set; }
         public required DbSet<User> Users { get; set; }
+        public required DbSet<Profile> Profiles { get; set; }
         public required DbSet<Order> Orders { get; set; }
         public required DbSet<OrderItem> OrderItems { get; set; }
     }

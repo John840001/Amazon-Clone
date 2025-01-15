@@ -70,4 +70,61 @@ namespace backend.Controllers
             return NoContent();
         }
     }
+
+    [ApiController]
+    [Route("api/profiles")]
+    public class ProfilesController(AppDbContext context) : ControllerBase
+    {
+        private readonly AppDbContext _context = context;
+
+        [HttpGet]
+        public IActionResult GetProfiles()
+        {
+            var profiles = _context.Profiles;
+            return Ok(profiles);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetProfile(int id)
+        {
+            var profile = _context.Profiles.FirstOrDefault(p => p.Id == id);
+            if (profile == null)
+                return NotFound();
+            return Ok(profile);
+        }
+
+        [HttpPost]
+        public IActionResult CreateProfile(Profile profile)
+        {
+            _context.Profiles.Add(profile);
+            _context.SaveChanges();
+            return Ok(profile);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateProfile(int id, Profile profile)
+        {
+            var existingProfile = _context.Profiles.FirstOrDefault(p => p.Id == id);
+            if (existingProfile == null)
+                return NotFound();
+            existingProfile.Name = profile.Name;
+            existingProfile.Email = profile.Email;
+            existingProfile.Address = profile.Address;
+            existingProfile.PhoneNumber = profile.PhoneNumber;
+            existingProfile.DateOfBirth = profile.DateOfBirth;
+            _context.SaveChanges();
+            return Ok(existingProfile);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteProfile(int id)
+        {
+            var profile = _context.Profiles.FirstOrDefault(p => p.Id == id);
+            if (profile == null)
+                return NotFound();
+            _context.Profiles.Remove(profile);
+            _context.SaveChanges();
+            return NoContent();
+        }
+    }
 }
